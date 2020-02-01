@@ -244,7 +244,7 @@ class Imprimir extends CI_Controller {
 			/* Information for the receipt */
 			$items = array();
 			foreach($detalles as $detalle){
-				$items[] = new item($detalle->cantidad,$detalle->nombre,$detalle->importe);
+				$items[] = new item($detalle->cantidad,$detalle->prefijo,$detalle->nombre,$detalle->importe);
 			}
 			$logo = "img/quicheladas3.png";
 			$img_logo = Escpos\EscposImage::load($logo,false);
@@ -352,11 +352,13 @@ class Imprimir extends CI_Controller {
 class item
 {
     private $quantity;
+    private $prefix;
     private $name;
     private $amount;
-    public function __construct($quantity = '', $name = '', $amount = '')
+    public function __construct($quantity = '',$prefix='', $name = '', $amount = '')
     {
         $this -> quantity = $quantity;
+        $this -> prefix = $prefix;
         $this -> name = $name;
         $this -> amount = $amount;
     }
@@ -364,13 +366,16 @@ class item
     public function __toString()
     {
         $numberColsQuantity = 6;
-        $numberColsName = 36;
+        $numberColsPrefix = 6;
+        $numberColsName = 30;
         $numberColsAmount = 6;
     
         $quantity = str_pad($this -> quantity, $numberColsQuantity) ;
+        $prefix = str_pad($this -> prefix, $numberColsPrefix) ;
+
         $name = str_pad($this -> name, $numberColsName) ;
        
         $amount = str_pad($this -> amount, $numberColsAmount, ' ', STR_PAD_LEFT);
-        return "$quantity$name$amount\n";
+        return "$quantity$prefix$name$amount\n";
     }
 }
