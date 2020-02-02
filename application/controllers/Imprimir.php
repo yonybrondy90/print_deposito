@@ -297,7 +297,7 @@ class Imprimir extends CI_Controller {
 			$printer -> text($venta->usuario."\n");
             
 			$printer->setEmphasis(true);
-			$printer->text($this->addSpaces('CANT.', 6) . $this->addSpaces('DESCRIPCION', 34) . $this->addSpaces('IMPORTE', 8,LEFT) . "\n");
+			$printer->text($this->addSpaces('CANT.', 6) .$this->addSpaces('U.M.', 6). $this->addSpaces('DESCRIPCION', 28) . $this->addSpaces('IMPORTE', 8,LEFT) . "\n");
 			/* Items */
 			$printer -> setEmphasis(false);
 			foreach ($items as $key => $item) {
