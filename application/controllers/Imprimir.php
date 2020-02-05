@@ -284,7 +284,7 @@ class Imprimir extends CI_Controller {
             $printer -> setEmphasis(true);
 			$printer -> text("Cliente:");
 			$printer -> setEmphasis(false);
-			$printer -> text($venta->nombre."\n");
+			$printer -> text($venta->nombres."\n");
             
 			$printer -> setEmphasis(true);
 			$printer -> text("Fecha y Hora:");
