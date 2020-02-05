@@ -22,7 +22,7 @@ class Imprimir extends CI_Controller {
 			$from = $_GET['from']; 
 			$serie = $_GET['serie']; 
 			$this->printVenta($venta,$detalles,$from,$serie);
-		} else {
+		} else if($ticket == "caja"){
 			
 			$caja = json_decode($_GET['caja']);
 			$tarjetas = json_decode($_GET['tarjetas']);
@@ -39,6 +39,13 @@ class Imprimir extends CI_Controller {
 			$total_gastos = $_GET['total_gastos'];
 			$numero_ventas= $_GET['numero_ventas'];
 			$this->printCaja($caja,$tarjetas,$gastos,$descuentos,$creditos,$cajero_nombre,$total_creditos,$total_descuentos,$total_efectivo,$total_ventas,$total_gastos,$numero_ventas);
+		} else{
+			$content = file_get_contents('http://localhost/deposito/img/logo_thumb.png');
+    		file_put_contents('img/logo.png', $content);
+
+    		$this->session->set_flashdata("success", "La información de la empresa ha sido guardada");
+    		redirect("http://localhost/deposito/administrador/empresa");
+		
 		}
 	}
 
