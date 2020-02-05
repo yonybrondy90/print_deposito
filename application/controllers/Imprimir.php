@@ -17,11 +17,12 @@ class Imprimir extends CI_Controller {
 		$ticket = $_GET['ticket']; 
 		
 		if ($ticket == "venta") {
+			$empresa = json_decode($_GET['empresa']);
 			$venta = json_decode($_GET['venta']); 
 			$detalles = json_decode($_GET['detalles']); 
 			$from = $_GET['from']; 
 			$serie = $_GET['serie']; 
-			$this->printVenta($venta,$detalles,$from,$serie);
+			$this->printVenta($venta,$detalles,$from,$serie,$empresa);
 		} else if($ticket == "caja"){
 			
 			$caja = json_decode($_GET['caja']);
@@ -243,7 +244,7 @@ class Imprimir extends CI_Controller {
 		}
 	}
 
-	public function printVenta($venta,$detalles,$from,$serie){
+	public function printVenta($venta,$detalles,$from,$serie,$empresa){
 		$this->load->library("EscPos.php");
 		
 		$connector = new Escpos\PrintConnectors\WindowsPrintConnector("deposito");
@@ -253,7 +254,7 @@ class Imprimir extends CI_Controller {
 			foreach($detalles as $detalle){
 				$items[] = new item($detalle->cantidad,$detalle->prefijo,$detalle->nombre,$detalle->importe);
 			}
-			$logo = "img/quicheladas3.png";
+			$logo = "img/logo.png";
 			$img_logo = Escpos\EscposImage::load($logo,false);
 			$printer = new Escpos\Printer($connector);
 			
@@ -262,12 +263,15 @@ class Imprimir extends CI_Controller {
 			/* Name of shop */
 			$printer -> selectPrintMode();
 			$printer -> setEmphasis(true);
-			$printer -> text("Deposito\n");
+			$printer -> text($empresa->nombre_empresa."\n");
 			$printer->bitImage($img_logo);
 			$printer -> setEmphasis(false);
 			$printer -> selectPrintMode();
-			$printer -> text("3a. Calle 1-06 Zona 1, 2do. Nivel Farmacia\n");
-			$printer -> text("Batres Don Paco Santa Cruz del Quiche\n");
+			$printer -> text($empresa->direccion."\n");
+			$printer -> feed();
+			$printer -> text("Tel: ".$empresa->telefono."\n");
+			$printer -> feed();
+			$printer -> text("NIT: ".$empresa->nit."\n");
 			$printer -> feed();
 			$printer -> setEmphasis(true);
 			$printer -> text($venta->comprobante."\n");
@@ -316,12 +320,13 @@ class Imprimir extends CI_Controller {
 			$printer -> text($this->addSpaces('TOTAL',36,LEFT).$this->addSpaces($venta->total,12,LEFT)."\n");
 			$printer -> setEmphasis(false);
 			$printer -> feed();
+			$printer->barcode("00".$venta->id, Escpos\Printer::BARCODE_CODE39);
 			$printer -> setJustification(Escpos\Printer::JUSTIFY_CENTER);
-			$printer -> text("Gracias por su preferencia\n");
-			$printer -> text("Si el servicio fue de tu agrado, agradeceremos una Propina\n");
+			$printer -> text($empresa->agradecimiento."\n");
+			
 			$printer -> text("Recuerda visitarnos en:\n");
-			$printer -> text("www.quicheladas.com\n");
-			$printer -> text("Quicheladas y Ceviches\n");
+			$printer -> text($empresa->pagina_web."\n");
+			$printer -> text($empresa->facebook."\n");
 			
 			$printer -> feed();
 			$printer -> feed();
