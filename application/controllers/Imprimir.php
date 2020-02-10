@@ -14,6 +14,7 @@ class Imprimir extends CI_Controller {
 		parse_str(substr(strrchr($_SERVER['REQUEST_URI'], "?"), 1), $_GET);
 
 		// grab values as you would from an ordinary $_GET superglobal array associative index.
+
 		$ticket = $_GET['ticket']; 
 		
 		if ($ticket == "venta") {
@@ -320,9 +321,13 @@ class Imprimir extends CI_Controller {
 			$printer -> text($this->addSpaces('TOTAL',36,LEFT).$this->addSpaces($venta->total,12,LEFT)."\n");
 			$printer -> setEmphasis(false);
 			$printer -> feed();
+			$printer -> setJustification(Escpos\Printer::JUSTIFY_CENTER);
+			$printer ->setBarcodeHeight(38);
 			$printer->barcode("00".$venta->id, Escpos\Printer::BARCODE_CODE39);
 			$printer -> setJustification(Escpos\Printer::JUSTIFY_CENTER);
+			$printer -> feed();
 			$printer -> text($empresa->agradecimiento."\n");
+			
 			
 			$printer -> text("Recuerda visitarnos en:\n");
 			$printer -> text($empresa->pagina_web."\n");
