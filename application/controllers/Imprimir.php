@@ -25,6 +25,9 @@ class Imprimir extends CI_Controller {
 			$serie = $_GET['serie']; 
 			$this->printVenta($venta,$detalles,$from,$serie,$empresa);
 		} else if($ticket == "caja"){
+
+			print_r($_GET);
+			exit();
 			
 			$caja = json_decode($_GET['caja']);
 			$tarjetas = json_decode($_GET['tarjetas']);
@@ -42,11 +45,11 @@ class Imprimir extends CI_Controller {
 			$numero_ventas= $_GET['numero_ventas'];
 			$this->printCaja($caja,$tarjetas,$gastos,$descuentos,$creditos,$cajero_nombre,$total_creditos,$total_descuentos,$total_efectivo,$total_ventas,$total_gastos,$numero_ventas);
 		} else{
-			$content = file_get_contents('http://localhost/deposito/img/logo_thumb.png');
+			$content = file_get_contents('https://codigosanha.com/deposito/img/logo_thumb.png');
     		file_put_contents('img/logo.png', $content);
 
     		$this->session->set_flashdata("success", "La información de la empresa ha sido guardada");
-    		redirect("http://localhost/deposito/administrador/empresa");
+    		redirect("https://codigosanha.com/deposito/administrador/empresa");
 		
 		}
 	}
@@ -237,18 +240,18 @@ class Imprimir extends CI_Controller {
 			$printer -> close();
 			
 			//echo "Se imprimio el ticket";
-			redirect("https://quicheladas.wilsonicx.com/caja/apertura_cierre");
+			redirect("https://codigosanha.com/deposito/caja/apertura_cierre");
 
 
 		} catch (Exception $e) {
-			redirect("https://quicheladas.wilsonicx.com/caja/apertura_cierre");
+			redirect("https://codigosanha.com/deposito/caja/apertura_cierre");
 		}
 	}
 
 	public function printVenta($venta,$detalles,$from,$serie,$empresa){
 		$this->load->library("EscPos.php");
 		
-		$connector = new Escpos\PrintConnectors\WindowsPrintConnector("deposito");
+		$connector = new Escpos\PrintConnectors\WindowsPrintConnector("POS-58C");
 		try {
 			/* Information for the receipt */
 			$items = array();
@@ -332,6 +335,8 @@ class Imprimir extends CI_Controller {
 			$printer -> text("Recuerda visitarnos en:\n");
 			$printer -> text($empresa->pagina_web."\n");
 			$printer -> text($empresa->facebook."\n");
+
+			$printer -> text("ID de Devolución : ".$venta->id."\n");
 			
 			$printer -> feed();
 			$printer -> feed();
@@ -345,13 +350,13 @@ class Imprimir extends CI_Controller {
 
 			redirect($this->agent->referrer());*/
 			
-			redirect("https://quicheladas.wilsonicx.com/movimientos/ventas");
+			redirect("https://codigosanha.com/deposito/movimientos/ventas");
 			
 		} catch (Exception $e) {
 			//echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
 			/*$this->session->set_flashdata("error",$e -> getMessage());*/
 
-			redirect("https://quicheladas.wilsonicx.com/movimientos/ventas");
+			redirect("https://codigosanha.com/deposito/movimientos/ventas");
 		}
 	}
 	protected function addSpaces($text,$length,$dir = RIGHT,$character =' '){
